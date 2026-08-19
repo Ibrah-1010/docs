@@ -77,6 +77,8 @@ export default async function genericToc(req: ExtendedRequest, res: Response, ne
   const isCategoryOrSubcategory =
     req.context.page.documentType === 'category' || req.context.page.documentType === 'subcategory'
   if (!req.context.currentPath) throw new Error('currentPath not in context')
+  if (typeof req.context.currentPath !== 'string')
+    throw new Error('currentPath in context must be a string')
   const isEarlyAccess = req.context.currentPath.includes('/early-access/')
   const isArticlesCategory = req.context.currentPath.endsWith('/articles')
 
