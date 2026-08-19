@@ -25,12 +25,12 @@ In this quickstart, you will:
 ## Prerequisites
 
 * A {% data variables.product.github %} account.
-* Access to {% data variables.product.prodname_copilot_short %} or a configured model provider.
+* A {% data variables.product.prodname_copilot_short %} plan, or you can configure your own model provider.
   * If you use your own model provider, you will need provider credentials such as an API key. For setup steps, see [AUTOTITLE](/copilot/how-tos/github-copilot-app/use-byok-models).
 * [Git](https://github.com/git-guides/install-git) installed on your computer.
 
 > [!NOTE]
-> If you use {% data variables.copilot.copilot_business_short %} or {% data variables.copilot.copilot_enterprise_short %}, your plan administrator will need to enable the **{% data variables.copilot.copilot_cli_short %}** policy. For more information, see [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-organization/manage-policies) or [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-enterprise/manage-enterprise-policies).
+> For {% data variables.copilot.copilot_business_short %} and {% data variables.copilot.copilot_enterprise_short %} users, the {% data variables.copilot.github_copilot_app %} policy must remain enabled. This policy is enabled by default and is separate from the {% data variables.copilot.copilot_cli_short %} policy. See [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-organization/manage-policies) or [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-enterprise/manage-enterprise-policies).
 
 ## Installing the {% data variables.copilot.github_copilot_app %}
 
@@ -75,12 +75,14 @@ To work on code, you need at least one project connected to the app. A project c
 
 ## Orienting yourself
 
+
 The sidebar gives you access to the main areas of the app:
 
 * **[My work](https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fmywork)** — Browse and filter issues and pull requests from your repositories, check CI status, and leave reviews.
 * **[Automations](https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations)** — Saved agent tasks that run on a schedule or on demand.
 * **Search** — Search across your repositories directly from the app.
-* **Sessions** — Active agent sessions, grouped by project. This also includes **Quick chats**, which are general chat conversations.
+* **Sessions** — Active agent sessions, grouped by project.
+* **Chats** — General conversations that do not require a dedicated branch or workspace.
 
 ## Next steps
 
@@ -90,4 +92,5 @@ Find out more about using the {% data variables.copilot.github_copilot_app %}:
 * [AUTOTITLE](/copilot/how-tos/github-copilot-app/working-with-canvas-extensions)
 * [AUTOTITLE](/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests)
 * [AUTOTITLE](/copilot/how-tos/github-copilot-app/using-automations)
-* [AUTOTITLE](/copilot/how-tos/github-copilot-app/open-with-deep-links)
+* [AUTOTITLE](/copilot/reference/github-copilot-app-reference/slash-commands)
+* [AUTOTITLE](/copilot/reference/github-copilot-app-reference/built-in-skills)

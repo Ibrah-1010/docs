@@ -69,6 +69,10 @@ MCP servers install from a policy-configured registry, which requires authentica
 |-----------|-----------------------------------------|
 | `--all`   | Update every installed plugin           |
 
+First-party plugins—those installed from the built-in `copilot-plugins` and `awesome-copilot` marketplaces—automatically update at the start of each session in a trusted working directory. Disable this behavior with the `autoUpdate` setting (set to `false`) or the `COPILOT_AUTO_UPDATE=false` environment variable. Auto-update is also skipped by default in CI. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-config-dir-reference#configuration-file-settings).
+
+A marketplace you've added yourself can opt into the same session-start auto-update by setting `autoUpdate: true` on its `extraKnownMarketplaces` entry in your user settings. This opt-in applies only to interactive and `-p` sessions—SDK and server sessions don't auto-update. It is honored from your own user settings or from managed (MDM/server) settings, but a repository-level `autoUpdate` setting is accepted and ignored—it can't enable or redirect auto-update for a marketplace. On a same-name collision, a built-in first-party marketplace wins, then a managed entry (which replaces the whole same-named user entry, so a managed entry without `"autoUpdate": true` removes the user's opt-in), then the user's own entry. See [Repository settings](/copilot/reference/copilot-cli-reference/cli-config-dir-reference#repository-settings-githubcopilotsettingsjson).
+
 ### `copilot plugins marketplace` subcommands
 
 Built-in default marketplaces ship with the runtime and can't be removed.
@@ -79,7 +83,9 @@ Built-in default marketplaces ship with the runtime and can't be removed.
 | `add SOURCE`            | Add a marketplace (`owner/repo`, `owner/repo#ref`, a URL, or a local path)    |
 | `remove NAME [--force]` | Remove a marketplace; `--force` also uninstalls plugins sourced from it   |
 | `browse NAME [--json]`  | List the plugins offered by a marketplace's catalog                        |
-| `update [NAME]` (alias `refresh`) | Refresh the plugin catalog for one marketplace, or all if `NAME` is omitted   |
+| `update [NAME]` (alias `refresh`) | Refresh the plugin catalog for one marketplace, or all if `NAME` is omitted |
+
+In interactive mode, run `/plugins marketplace update [NAME]` (alias `/plugins marketplace refresh`), or press `r` in the plugins dashboard's Marketplace tab, to refresh every registered marketplace's catalog.
 
 ## `plugin.json`
 
@@ -89,12 +95,13 @@ All plugins consist of a plugin directory containing, at minimum, a manifest fil
 
 | Field   | Type   | Description |
 |---------|--------|-------------|
-| `name`  | string | Kebab-case plugin name (letters, numbers, hyphens only). Max 64 chars. |
+| `name`  | string | Kebab-case plugin name (letters, numbers, hyphens only). Max 64 chars. Plugins that opt into [Open Plugin Spec support](#open-plugin-spec-support) may also use dots (for example, `acme.tools`). |
 
 ### Optional metadata fields
 
 | Field        | Type      | Description |
 |--------------|-----------|-------------|
+| `$schema`    | string    | Set to the canonical Agent Plugins (Open Plugin Spec) v1.0.0 schema URL to opt into spec semantics. See [Open Plugin Spec support](#open-plugin-spec-support). |
 | `description`| string    | Brief description. Max 1024 chars. |
 | `version`    | string    | Semantic version (e.g., `1.0.0`). |
 | `author`     | object    | `name` (required), `email` (optional), `url` (optional). |
@@ -115,13 +122,18 @@ These tell the CLI where to find your plugin's components. All are optional. The
 | `skills`    | string \| string[] | `skills/`  | Path(s) to skill directories (`SKILL.md` files). |
 | `commands`  | string \| string[] | —          | Path(s) to command directories. |
 | `hooks`     | string \| object   | —          | Path to a hooks configuration file, or an inline hooks object. |
-| `extensions`| string \| string[] \| object | —          | Path(s) to extension directories. Use `{ paths: [...], exclusive: true }` to suppress built-in extensions. |
+| `extensions`| string \| string[] \| object | —          | Path(s) to extension directories. Use `{ paths: [...], exclusive: true }` to suppress built-in extensions. In [Open Plugin Spec mode](#open-plugin-spec-support), this field has a different meaning. |
 | `mcpServers`| string \| object   | —          | Path to an MCP configuration file (e.g., `.mcp.json`), or inline server definitions. |
 | `lspServers`| string \| object   | —          | Path to an LSP configuration file, or inline server definitions. |
 
 ### Example `plugin.json` file
 
 {% data reusables.copilot.copilot-cli.cli-example-plugin-file %}
+
+## Open Plugin Spec support
+
+Declaring the canonical `$schema` in `plugin.json` opts a plugin into the [Agent Plugins (Open Plugin Spec)](https://agent-plugins.org) v1.0.0 format, additively on top of standard plugin loading:
+
 
 ### LSP server configuration
 
@@ -196,7 +208,7 @@ For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-cop
 
 | Field      | Type     | Required | Description |
 |------------|----------|----------|-------------|
-| `name`     | string   | Yes      | Kebab-case marketplace name. Max 64 chars. |
+| `name`     | string   | Yes      | Kebab-case marketplace name. Max 64 chars. Dots are also accepted (for example, `acme.tools`) for [Open Plugin Spec](#open-plugin-spec-support) plugins. |
 | `owner`    | object   | Yes      | `{ name, email? }` — marketplace owner info. |
 | `plugins`  | array    | Yes      | List of plugin entries (see the table below). |
 | `metadata` | object   | No       | `{ description?, version?, pluginRoot? }` |
@@ -205,7 +217,7 @@ For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-cop
 
 | Field         | Type               | Required | Description |
 |---------------|--------------------|----------|-------------|
-| `name`        | string             | Yes      | Kebab-case plugin name. Max 64 chars. |
+| `name`        | string             | Yes      | Kebab-case plugin name. Max 64 chars. Dots are also accepted for [Open Plugin Spec](#open-plugin-spec-support) plugins. |
 | `source`      | string \| object   | Yes      | Where to fetch the plugin (relative path, {% data variables.product.github %}, or URL). |
 | `description` | string             | No       | Plugin description. Max 1024 chars. |
 | `version`     | string             | No       | Plugin version. |
