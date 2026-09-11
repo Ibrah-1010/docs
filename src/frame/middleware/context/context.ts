@@ -39,7 +39,11 @@ export default async function contextualize(
 
   req.context.process = { env: {} }
 
-  if (req.pagePath && req.pagePath.endsWith('.md')) {
+  if (req.pagePath && typeof req.pagePath !== 'string') {
+    throw new Error('pagePath must be a string')
+  }
+
+  if (typeof req.pagePath === 'string' && req.pagePath.endsWith('.md')) {
     // req.pagePath is used later in the rendering pipeline to
     // locate the file in the tree so it cannot have .md
     req.pagePath = req.pagePath.replace(/\/index\.md$/, '').replace(/\.md$/, '')
@@ -65,6 +69,7 @@ export default async function contextualize(
   // define property for writers to link to the current page in a different version
   // includes any type of rendered page not just "articles"
   req.context.currentArticle = getPathWithoutVersion(req.context.currentPathWithoutLanguage)
+  if (typeof req.pagePath !== 'string') throw new Error('pagePath must be a string')
   req.context.currentPath = req.pagePath
   req.context.query = req.query
   req.context.languages = languages
